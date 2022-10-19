@@ -5,8 +5,8 @@ const showSuccess = document.querySelector('.show-success');
 
 modalMain.classList.add("modal_active");
 
-for(i = 0; i < closeModal.length; i++) {
-    close = closeModal[i];
+for (let i = 0; i < closeModal.length; i++) {
+    const close = closeModal[i];
     close.onclick = function() {
         this.closest('.modal').classList.remove("modal_active");
     }
