@@ -13,7 +13,7 @@ for(let i = 0; i < menuLinks.length; i++) {
         //получаем все menu_sub на в менюшке
         let menuSub = menuMain.querySelectorAll('.menu_sub');
         //проверяем активность меню у текущей ссылки
-        let isActive = subMenu.className.includes('menu_active');
+        let isActive = subMenu ? subMenu.className.includes('menu_active') : false;
         
         for(let i = 0; i < menuSub.length; i++) {
             //при клике скрываем все меню
