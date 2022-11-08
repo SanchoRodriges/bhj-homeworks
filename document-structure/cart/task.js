@@ -24,9 +24,9 @@ for (let i = 0; i < controls.length; i++) {
 
 //находим кнопки добавления в корзину
 const addToCart = document.querySelectorAll('.product__add');
-//добавление товара в корзину
+
 for (let i = 0; i < addToCart.length; i++) {
-    let button = addToCart[i];
+    const button = addToCart[i];
     button.addEventListener('click', () => {
 
         //находим корзину
@@ -39,57 +39,36 @@ for (let i = 0; i < addToCart.length; i++) {
         let productQuantity = product.querySelector('.product__quantity-value').textContent;
         //находим изображение
         const productImage = product.querySelector('.product__image').src;
-        //находим товары в корзине
-        let cartList = cart.querySelectorAll('.cart__product');
-        //если товары уже есть
-        if (cartList.length) {
-            for (let n = 0; n < cartList.length; n++) {
-                if (cartList[n].getAttribute('data-id') == productId) {
-                    let cartQuantity = cartList[n].querySelector('.cart__product-count');
-                    let oldCartQuantity = Number(productQuantity);
-                    let newCartQuantity = Number(cartQuantity.textContent);
-                    cartQuantity.textContent = newCartQuantity + oldCartQuantity;
-                } else {
-                    //создаём cart__product
-                    let cartProduct = document.createElement('div');
-                    cartProduct.classList.add('cart__product');
-                    cartProduct.dataset.id = productId;
-                    //создаём cart__product-image
-                    let cartProductImg = document.createElement('img');
-                    cartProductImg.classList.add('cart__product-image');
-                    cartProductImg.src = productImage;
-                    //создаём cart__product-count
-                    let cartProductCount = document.createElement('div');
-                    cartProductCount.classList.add('cart__product-count');
-                    cartProductCount.textContent = productQuantity;
-                    //собираем html
-                    cartProduct.appendChild(cartProductImg);
-                    cartProduct.appendChild(cartProductCount);
-                    //добавляем в корзину
-                    cart.appendChild(cartProduct);
-                }
-            }
+        //находим все товары в корзине
+        const cartProducts = Array.from(cart.querySelectorAll('.cart__product'));
 
+        //если в корзине нет товаров
+        if(!cartProducts.length) {
+            cart.insertAdjacentHTML('beforeend', `
+            <div class="cart__product" data-id="${productId}">
+                <img class="cart__product-image" src="${productImage}">
+                <div class="cart__product-count">${productQuantity}</div>
+            </div>
+            `);
+        //если есть хоть один товар
         } else {
-            //создаём cart__product
-            let cartProduct = document.createElement('div');
-            cartProduct.classList.add('cart__product');
-            cartProduct.dataset.id = productId;
-            //создаём cart__product-image
-            let cartProductImg = document.createElement('img');
-            cartProductImg.classList.add('cart__product-image');
-            cartProductImg.src = productImage;
-            //создаём cart__product-count
-            let cartProductCount = document.createElement('div');
-            cartProductCount.classList.add('cart__product-count');
-            cartProductCount.textContent = productQuantity;
-            //собираем html
-            cartProduct.appendChild(cartProductImg);
-            cartProduct.appendChild(cartProductCount);
-            //добавляем в корзину
-            cart.appendChild(cartProduct);
+            //ищем товар с таким же ID
+            let findProduct = cartProducts.find( item => item.getAttribute('data-id') === productId );
+            //если есть - добавляем количество
+            if (findProduct) {
+                const cartProductCount = findProduct.querySelector('.cart__product-count');
+                let newCartProductCount = Number(cartProductCount.textContent) + Number(productQuantity);
+                cartProductCount.textContent = newCartProductCount;
+            //если нет - добавляем товар
+            } else {
+                cart.insertAdjacentHTML('beforeend', `
+                <div class="cart__product" data-id="${productId}">
+                    <img class="cart__product-image" src="${productImage}">
+                    <div class="cart__product-count">${productQuantity}</div>
+                </div>`);
+            }
         }
 
-    });
+    })
     
 }
