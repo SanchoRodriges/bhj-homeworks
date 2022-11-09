@@ -4,38 +4,35 @@ const form = document.getElementById('tasks__form');
 const input = document.querySelector('#task__input');
 //находим кнопку
 const button = document.getElementById('tasks__add');
+//находим список задач
+const taskList = document.getElementById('tasks__list');
 
 //отправляем форму
 form.addEventListener('submit', e => {
-    if (input.value !== '') {
+    //если поле не пустое и не состоит из пробелов
+    if ((input.value).trim() !== '') {
         //запускаем функцию добавления задачи и передаём туда текст
         addTask(input.value);
     }
+    //очищаем input
+    input.value = '';
     //отключаем отправку формы
     e.preventDefault();
 })
 
 //добавление записи
 function addTask(text) {
-    const taskList = document.getElementById('tasks__list');
-    //создаем div .task
-    let newTask = document.createElement('div');
-    newTask.classList.add('task');
-    //создаем div .task__title
-    let newTaskDiv = document.createElement('div');
-    newTaskDiv.classList.add('task__title');
-    newTaskDiv.textContent = text;
-    //создаем a .task__remove
-    let newTaskA = document.createElement('a');
-    newTaskA.href = '#';
-    newTaskA.classList.add('task__remove');
-    newTaskA.innerHTML = "&times;";
-    //собираем html
-    newTask.appendChild(newTaskDiv);
-    newTask.appendChild(newTaskA);
-    //добавляем новую запись в список
-    taskList.appendChild(newTask);
-
-    //удаление записи
-    newTaskA.addEventListener('click', () => newTask.remove() );
+    taskList.insertAdjacentHTML('beforeend', `
+    <div class="task">
+        <div class="task__title">${text}</div>
+        <a href="#" class="task__remove">&times;</a>
+    </div> 
+    `);
 }
+
+//удаление записи
+taskList.addEventListener('click', (e) => {
+    if (e.target.classList.contains('task__remove')) {
+        e.target.parentElement.remove();
+    }
+});
